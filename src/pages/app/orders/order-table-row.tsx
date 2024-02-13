@@ -1,12 +1,35 @@
+import { formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { ArrowRight, Search, X } from 'lucide-react';
 
+import { OrderStatus } from '@/components/order-status';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { TableCell, TableRow } from '@/components/ui/table';
 
 import { OrderDetails } from './order-details';
 
-export function OrderTableRow() {
+interface IOrderTableRowProps {
+	order: {
+		orderId: string;
+		createdAt: string;
+		status: 'pending' | 'canceled' | 'processing' | 'delivering' | 'delivered';
+		customerName: string;
+		total: number;
+	};
+}
+
+export function OrderTableRow({ order }: IOrderTableRowProps) {
+	const totalOrderFormatted = order.total.toLocaleString('pt-BR', {
+		currency: 'BRL',
+		style: 'currency',
+	});
+
+	const orderCreatedAtFormatted = formatDistanceToNow(order.createdAt, {
+		locale: ptBR,
+		addSuffix: true,
+	});
+
 	return (
 		<TableRow>
 			<TableCell>
@@ -21,18 +44,13 @@ export function OrderTableRow() {
 					<OrderDetails />
 				</Dialog>
 			</TableCell>
-			<TableCell className="font-mono text-xs font-medium">
-				13548-adwq5478asd-qw54q65e74
-			</TableCell>
-			<TableCell className="text-muted-foreground">há 15 minutos</TableCell>
+			<TableCell className="font-mono text-xs font-medium">{order.orderId}</TableCell>
+			<TableCell className="text-muted-foreground">{orderCreatedAtFormatted}</TableCell>
 			<TableCell>
-				<div className="flex items-center gap-2">
-					<span className="h-2 w-2 rounded-full bg-slate-400" />
-					<span className="font-medium text-muted-foreground">Pendente</span>
-				</div>
+				<OrderStatus status={order.status} />
 			</TableCell>
-			<TableCell className="font-medium">Mathews Araújo</TableCell>
-			<TableCell className="font-medium">R$ 129,90</TableCell>
+			<TableCell className="font-medium">{order.customerName}</TableCell>
+			<TableCell className="font-medium">{totalOrderFormatted}</TableCell>
 			<TableCell>
 				<Button variant="outline" size="xs">
 					<ArrowRight className="mr-2 h-3 w-3" />
