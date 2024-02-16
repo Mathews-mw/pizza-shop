@@ -1,5 +1,12 @@
 import { api } from '@/lib/axios';
 
+export interface IGetOrdersQuery {
+	pageIndex?: number | null;
+	orderId?: string | null;
+	customerName: string | null;
+	status: string | null;
+}
+
 export interface IGetOrdersResponse {
 	orders: {
 		orderId: string;
@@ -15,10 +22,13 @@ export interface IGetOrdersResponse {
 	};
 }
 
-export async function getOrders() {
+export async function getOrders({ pageIndex, orderId, customerName, status }: IGetOrdersQuery) {
 	const { data } = await api.get<IGetOrdersResponse>('/orders', {
 		params: {
-			pageIndex: 0,
+			pageIndex,
+			orderId,
+			customerName,
+			status,
 		},
 	});
 
