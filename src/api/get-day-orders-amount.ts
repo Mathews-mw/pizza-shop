@@ -1,6 +1,6 @@
 import { api } from '@/lib/axios';
 
-interface IGetDayOrdersAmountResponse {
+export interface IGetDayOrdersAmountResponse {
 	amount: number;
 	diffFromYesterdat: number;
 }
